@@ -1,0 +1,494 @@
+[
+  {
+    "name": "bindings",
+    "shortNames": null,
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "Binding",
+    "plural": "Bindings",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.Binding"
+  },
+  {
+    "name": "componentstatuses",
+    "shortNames": "cs",
+    "apiVersion": "v1",
+    "namespaced": false,
+    "kind": "ComponentStatus",
+    "plural": "ComponentStatuses"
+  },
+  {
+    "name": "configmaps",
+    "shortNames": "cm",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "ConfigMap",
+    "plural": "ConfigMaps",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.ConfigMap"
+  },
+  {
+    "name": "endpoints",
+    "shortNames": "ep",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "Endpoints",
+    "plural": "Endpoints"
+  },
+  {
+    "name": "events",
+    "shortNames": "ev",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "Event",
+    "plural": "Events"
+  },
+  {
+    "name": "limitranges",
+    "shortNames": "limits",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "LimitRange",
+    "plural": "LimitRanges"
+  },
+  {
+    "name": "namespaces",
+    "shortNames": "ns",
+    "apiVersion": "v1",
+    "namespaced": false,
+    "kind": "Namespace",
+    "plural": "Namespaces",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.Namespace"
+  },
+  {
+    "name": "nodes",
+    "shortNames": "no",
+    "apiVersion": "v1",
+    "namespaced": false,
+    "kind": "Node",
+    "plural": "Nodes",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.Node"
+  },
+  {
+    "name": "persistentvolumeclaims",
+    "shortNames": "pvc",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "PersistentVolumeClaim",
+    "plural": "PersistentVolumeClaims",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.PersistentVolumeClaim"
+  },
+  {
+    "name": "persistentvolumes",
+    "shortNames": "pv",
+    "apiVersion": "v1",
+    "namespaced": false,
+    "kind": "PersistentVolume",
+    "plural": "PersistentVolumes",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.PersistentVolume"
+  },
+  {
+    "name": "pods",
+    "shortNames": "po",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "Pod",
+    "plural": "Pods",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.Pod"
+  },
+  {
+    "name": "podtemplates",
+    "shortNames": null,
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "PodTemplate",
+    "plural": "PodTemplates"
+  },
+  {
+    "name": "replicationcontrollers",
+    "shortNames": "rc",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "ReplicationController",
+    "plural": "ReplicationControllers"
+  },
+  {
+    "name": "resourcequotas",
+    "shortNames": "quota",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "ResourceQuota",
+    "plural": "ResourceQuotas"
+  },
+  {
+    "name": "secrets",
+    "shortNames": null,
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "Secret",
+    "plural": "Secrets",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.Secret"
+  },
+  {
+    "name": "serviceaccounts",
+    "shortNames": "sa",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "ServiceAccount",
+    "plural": "ServiceAccounts",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.ServiceAccount"
+  },
+  {
+    "name": "services",
+    "shortNames": "svc",
+    "apiVersion": "v1",
+    "namespaced": true,
+    "kind": "Service",
+    "plural": "Services",
+    "javaProtoParser": "io.kubernetes.client.proto.V1.Service"
+  },
+  {
+    "name": "mutatingwebhookconfigurations",
+    "shortNames": null,
+    "apiVersion": "admissionregistration.k8s.io/v1",
+    "namespaced": false,
+    "kind": "MutatingWebhookConfiguration",
+    "plural": "MutatingWebhookConfigurations",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Admissionregistration.MutatingWebhookConfiguration"
+  },
+  {
+    "name": "validatingwebhookconfigurations",
+    "shortNames": null,
+    "apiVersion": "admissionregistration.k8s.io/v1",
+    "namespaced": false,
+    "kind": "ValidatingWebhookConfiguration",
+    "plural": "ValidatingWebhookConfigurations",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Admissionregistration.ValidatingWebhookConfiguration"
+  },
+  {
+    "name": "customresourcedefinitions",
+    "shortNames": "crd,crds",
+    "apiVersion": "apiextensions.k8s.io/v1",
+    "namespaced": false,
+    "kind": "CustomResourceDefinition",
+    "plural": "CustomResourceDefinitions"
+  },
+  {
+    "name": "apiservices",
+    "shortNames": null,
+    "apiVersion": "apiregistration.k8s.io/v1",
+    "namespaced": false,
+    "kind": "APIService",
+    "plural": "APIServices"
+  },
+  {
+    "name": "controllerrevisions",
+    "shortNames": null,
+    "apiVersion": "apps/v1",
+    "namespaced": true,
+    "kind": "ControllerRevision",
+    "plural": "ControllerRevisions",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Apps.ControllerRevision"
+  },
+  {
+    "name": "daemonsets",
+    "shortNames": "ds",
+    "apiVersion": "apps/v1",
+    "namespaced": true,
+    "kind": "DaemonSet",
+    "plural": "DaemonSets",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Apps.DaemonSet"
+  },
+  {
+    "name": "deployments",
+    "shortNames": "deploy",
+    "apiVersion": "apps/v1",
+    "namespaced": true,
+    "kind": "Deployment",
+    "plural": "Deployments",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Apps.Deployment"
+  },
+  {
+    "name": "replicasets",
+    "shortNames": "rs",
+    "apiVersion": "apps/v1",
+    "namespaced": true,
+    "kind": "ReplicaSet",
+    "plural": "ReplicaSets",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Apps.ReplicaSet"
+  },
+  {
+    "name": "statefulsets",
+    "shortNames": "sts",
+    "apiVersion": "apps/v1",
+    "namespaced": true,
+    "kind": "StatefulSet",
+    "plural": "StatefulSets",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Apps.StatefulSet"
+  },
+  {
+    "name": "selfsubjectreviews",
+    "shortNames": null,
+    "apiVersion": "authentication.k8s.io/v1",
+    "namespaced": false,
+    "kind": "SelfSubjectReview",
+    "plural": "SelfSubjectReviews"
+  },
+  {
+    "name": "tokenreviews",
+    "shortNames": null,
+    "apiVersion": "authentication.k8s.io/v1",
+    "namespaced": false,
+    "kind": "TokenReview",
+    "plural": "TokenReviews"
+  },
+  {
+    "name": "localsubjectaccessreviews",
+    "shortNames": null,
+    "apiVersion": "authorization.k8s.io/v1",
+    "namespaced": true,
+    "kind": "LocalSubjectAccessReview",
+    "plural": "LocalSubjectAccessReviews"
+  },
+  {
+    "name": "selfsubjectaccessreviews",
+    "shortNames": null,
+    "apiVersion": "authorization.k8s.io/v1",
+    "namespaced": false,
+    "kind": "SelfSubjectAccessReview",
+    "plural": "SelfSubjectAccessReviews"
+  },
+  {
+    "name": "selfsubjectrulesreviews",
+    "shortNames": null,
+    "apiVersion": "authorization.k8s.io/v1",
+    "namespaced": false,
+    "kind": "SelfSubjectRulesReview",
+    "plural": "SelfSubjectRulesReviews"
+  },
+  {
+    "name": "subjectaccessreviews",
+    "shortNames": null,
+    "apiVersion": "authorization.k8s.io/v1",
+    "namespaced": false,
+    "kind": "SubjectAccessReview",
+    "plural": "SubjectAccessReviews"
+  },
+  {
+    "name": "horizontalpodautoscalers",
+    "shortNames": "hpa",
+    "apiVersion": "autoscaling/v2",
+    "namespaced": true,
+    "kind": "HorizontalPodAutoscaler",
+    "plural": "HorizontalPodAutoscalers"
+  },
+  {
+    "name": "cronjobs",
+    "shortNames": "cj",
+    "apiVersion": "batch/v1",
+    "namespaced": true,
+    "kind": "CronJob",
+    "plural": "CronJobs",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Batch.CronJob"
+  },
+  {
+    "name": "jobs",
+    "shortNames": null,
+    "apiVersion": "batch/v1",
+    "namespaced": true,
+    "kind": "Job",
+    "plural": "Jobs",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Batch.Job"
+  },
+  {
+    "name": "certificatesigningrequests",
+    "shortNames": "csr",
+    "apiVersion": "certificates.k8s.io/v1",
+    "namespaced": false,
+    "kind": "CertificateSigningRequest",
+    "plural": "CertificateSigningRequests"
+  },
+  {
+    "name": "leases",
+    "shortNames": null,
+    "apiVersion": "coordination.k8s.io/v1",
+    "namespaced": true,
+    "kind": "Lease",
+    "plural": "Leases"
+  },
+  {
+    "name": "endpointslices",
+    "shortNames": null,
+    "apiVersion": "discovery.k8s.io/v1",
+    "namespaced": true,
+    "kind": "EndpointSlice",
+    "plural": "EndpointSlices"
+  },
+//  {
+//    "name": "events",
+//    "shortNames": "ev",
+//    "apiVersion": "events.k8s.io/v1",
+//    "namespaced": true,
+//    "kind": "Event"
+//  },
+  {
+    "name": "flowschemas",
+    "shortNames": null,
+    "apiVersion": "flowcontrol.apiserver.k8s.io/v1beta3",
+    "namespaced": false,
+    "kind": "FlowSchema",
+    "plural": "FlowSchemas"
+  },
+  {
+    "name": "prioritylevelconfigurations",
+    "shortNames": null,
+    "apiVersion": "flowcontrol.apiserver.k8s.io/v1beta3",
+    "namespaced": false,
+    "kind": "PriorityLevelConfiguration",
+    "plural": "PriorityLevelConfigurations"
+  },
+  {
+    "name": "nodes",
+    "shortNames": null,
+    "apiVersion": "metrics.k8s.io/v1beta1",
+    "namespaced": false,
+    "kind": "NodeMetrics",
+    "plural": "NodeMetrics"
+  },
+  {
+    "name": "pods",
+    "shortNames": null,
+    "apiVersion": "metrics.k8s.io/v1beta1",
+    "namespaced": true,
+    "kind": "PodMetrics",
+    "plural": "PodMetrics"
+  },
+  {
+    "name": "ingressclasses",
+    "shortNames": null,
+    "apiVersion": "networking.k8s.io/v1",
+    "namespaced": false,
+    "kind": "IngressClass",
+    "plural": "IngressClasses",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Networking.IngressClass"
+  },
+  {
+    "name": "ingresses",
+    "shortNames": "ing",
+    "apiVersion": "networking.k8s.io/v1",
+    "namespaced": true,
+    "kind": "Ingress",
+    "plural": "Ingresses",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Networking.Ingress"
+  },
+  {
+    "name": "networkpolicies",
+    "shortNames": "netpol",
+    "apiVersion": "networking.k8s.io/v1",
+    "namespaced": true,
+    "kind": "NetworkPolicy",
+    "plural": "NetworkPolicies",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Networking.NetworkPolicy"
+  },
+  {
+    "name": "runtimeclasses",
+    "shortNames": null,
+    "apiVersion": "node.k8s.io/v1",
+    "namespaced": false,
+    "kind": "RuntimeClass",
+    "plural": "RuntimeClasses"
+  },
+  {
+    "name": "poddisruptionbudgets",
+    "shortNames": "pdb",
+    "apiVersion": "policy/v1",
+    "namespaced": true,
+    "kind": "PodDisruptionBudget",
+    "plural": "PodDisruptionBudgets"
+  },
+  {
+    "name": "clusterrolebindings",
+    "shortNames": null,
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "namespaced": false,
+    "kind": "ClusterRoleBinding",
+    "plural": "ClusterRoleBindings",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Rbac.ClusterRoleBinding"
+  },
+  {
+    "name": "clusterroles",
+    "shortNames": null,
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "namespaced": false,
+    "kind": "ClusterRole",
+    "plural": "ClusterRoles",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Rbac.ClusterRole"
+  },
+  {
+    "name": "rolebindings",
+    "shortNames": null,
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "namespaced": true,
+    "kind": "RoleBinding",
+    "plural": "RoleBindings",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Rbac.RoleBinding"
+  },
+  {
+    "name": "roles",
+    "shortNames": null,
+    "apiVersion": "rbac.authorization.k8s.io/v1",
+    "namespaced": true,
+    "kind": "Role",
+    "plural": "Roles",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Rbac.Role"
+  },
+  {
+    "name": "priorityclasses",
+    "shortNames": "pc",
+    "apiVersion": "scheduling.k8s.io/v1",
+    "namespaced": false,
+    "kind": "PriorityClass",
+    "plural": "PriorityClasses",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Scheduling.PriorityClass"
+  },
+  {
+    "name": "csidrivers",
+    "shortNames": null,
+    "apiVersion": "storage.k8s.io/v1",
+    "namespaced": false,
+    "kind": "CSIDriver",
+    "plural": "CSIDrivers",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Storage.CSIDriver"
+  },
+  {
+    "name": "csinodes",
+    "shortNames": null,
+    "apiVersion": "storage.k8s.io/v1",
+    "namespaced": false,
+    "kind": "CSINode",
+    "plural": "CSINodes",
+    "javaProtoParser": "io.kubernetes.client.proto.V1Storage.CSINode"
+  },
+  {
+    "name": "csistoragecapacities",
+    "shortNames": null,
+    "apiVersion": "storage.k8s.io/v1",
+    "namespaced": true,
+    "kind": "CSIStorageCapacity",
+    "plural": "CSIStorageCapacities"
+  },
+  {
+    "name": "storageclasses",
+    "shortNames": "sc",
+    "apiVersion": "storage.k8s.io/v1",
+    "namespaced": false,
+    "kind": "StorageClass",
+    "plural": "StorageClasses"
+  },
+  {
+    "name": "volumeattachments",
+    "shortNames": null,
+    "apiVersion": "storage.k8s.io/v1",
+    "namespaced": false,
+    "kind": "VolumeAttachment",
+    "plural": "VolumeAttachments"
+  }
+]
