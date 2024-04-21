@@ -21,7 +21,6 @@ public abstract class APIResources {
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
       objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-      objectMapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
       objectMapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
 
       ObjectReader objectReader = objectMapper.readerForListOf(APIResource.class);

@@ -1,8 +1,8 @@
 # README
 
-<img src="https://img.shields.io/badge/java%2017-F56C2D.svg?style=for-the-badge&logo=openjdk&logoColor=F56C2D&labelColor=white">
-<img src="https://img.shields.io/badge/etcd%20v3.5.12-419EDA.svg?style=for-the-badge&logo=etcd&logoColor=419EDA&labelColor=white">
-<img src="https://img.shields.io/badge/k8s%20v1.28.x-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=326CE5&labelColor=white">
+![](https://img.shields.io/badge/java%2017-F56C2D.svg?style=for-the-badge&logo=openjdk&logoColor=F56C2D&labelColor=white)
+![](https://img.shields.io/badge/etcd%20v3.5.12-419EDA.svg?style=for-the-badge&logo=etcd&logoColor=419EDA&labelColor=white)
+![](https://img.shields.io/badge/k8s%20v1.28.x-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=326CE5&labelColor=white)
 
 ## TL;DR
 

@@ -39,7 +39,7 @@ public class KubernetesNativeResourceTable extends AbstractKubernetesTable
       ImmutableMap.ofEntries(
         Map.entry("Name", relDataTypeFactory.createSqlType(SqlTypeName.VARCHAR)),
         Map.entry("Namespace", relDataTypeFactory.createSqlType(SqlTypeName.VARCHAR)),
-        Map.entry("Revision", relDataTypeFactory.createSqlType(SqlTypeName.BIGINT)),
+        Map.entry("Version", relDataTypeFactory.createSqlType(SqlTypeName.BIGINT)),
         Map.entry("CreateRevision", relDataTypeFactory.createSqlType(SqlTypeName.BIGINT)),
         Map.entry("ModifyRevision", relDataTypeFactory.createSqlType(SqlTypeName.BIGINT)),
         Map.entry("Size", relDataTypeFactory.createSqlType(SqlTypeName.BIGINT)),

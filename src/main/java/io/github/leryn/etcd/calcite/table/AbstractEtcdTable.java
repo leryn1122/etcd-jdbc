@@ -7,12 +7,16 @@ import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.impl.AbstractTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract Etcd table for those data fetched from Etcd entries
  * which holds an Etcd client instance.
  */
 public abstract class AbstractEtcdTable extends AbstractTable implements NamedTable {
+
+  protected Logger log = LoggerFactory.getLogger(AbstractEtcdTable.class);
 
   /**
    * Etcd client

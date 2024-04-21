@@ -65,7 +65,6 @@ public final class KubernetesAPIResourceTable extends AbstractKubernetesTable
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
       objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-      objectMapper.configure(JsonParser.Feature.ALLOW_MISSING_VALUES, true);
       objectMapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
 
       ObjectReader objectReader = objectMapper.readerForListOf(APIResource.class);
@@ -74,14 +73,15 @@ public final class KubernetesAPIResourceTable extends AbstractKubernetesTable
       Collection<Object[]> results = resources.stream().map(r -> new Object[]{
         /* Name        */r.getName(),
         /* APIVersion  */r.getAPIVersion(),
-        /* Kind        */r.getPlural(),
-        /* Plural      */r.getKind(),
+        /* Kind        */r.getKind(),
+        /* Plural      */r.getPlural(),
         /* Namespaced  */r.isNamespaced(),
         /* ShortNames  */r.getShortNames()
       }).collect(Collectors.toList());
       return Linq4j.asEnumerable(results);
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(
+        "Failed to get Kubernetes API resources from the driver built-in property file: [api-resources.json]", e);
     }
   }
 }

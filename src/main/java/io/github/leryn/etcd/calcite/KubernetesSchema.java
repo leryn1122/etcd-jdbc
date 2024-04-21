@@ -1,6 +1,5 @@
 package io.github.leryn.etcd.calcite;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +15,9 @@ import io.etcd.jetcd.KV;
 import io.etcd.jetcd.KeyValue;
 import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.options.GetOption;
-import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.github.leryn.etcd.Constants;
 import io.github.leryn.etcd.EtcdConfiguration;
+import io.github.leryn.etcd.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.table.AbstractEtcdTable;
 import io.github.leryn.etcd.calcite.table.AbstractKubernetesTable;
 import io.github.leryn.etcd.calcite.table.KubernetesAPIResourceTable;
@@ -48,26 +47,26 @@ public class KubernetesSchema extends EtcdSchema {
   }
 
   private Iterable<AbstractEtcdTable> getCRDTable() {
-    KV kv = getClient().getKVClient();
+    KV kvClient = getClient().getKVClient();
     ByteSequence key = ByteSequence.from(Constants.CRD_DEFINITIONS_KEY_PREFIX, StandardCharsets.UTF_8);
     GetResponse response = null;
     try {
-      response = kv.get(key, GetOption.builder()
+      response = kvClient.get(key, GetOption.builder()
         .isPrefix(true)
-        .withLimit(1000)
+        .withKeysOnly(true)
+        .withLimit(1024)
         .build()).get(10, TimeUnit.SECONDS);
 
-      List<AbstractEtcdTable> results = new ArrayList<>(response.getKvs().size() + 1);
+      List<AbstractEtcdTable> results = new ArrayList<>(response.getKvs().size());
       for (KeyValue keyValue : response.getKvs()) {
         String crdName = keyValue.getKey().substring(Constants.CRD_DEFINITIONS_KEY_PREFIX.length()).toString();
-        CustomResourceDefinition customResourceDefinition = getObjectMapper().readValue(keyValue.getValue().getBytes(), CustomResourceDefinition.class);
-        KubernetesCustomResourceDefinitionDetailTable table = new KubernetesCustomResourceDefinitionDetailTable(getClient(), getObjectMapper(), customResourceDefinition);
+        KubernetesCustomResourceDefinitionDetailTable table = new KubernetesCustomResourceDefinitionDetailTable(crdName, getClient(), getObjectMapper());
         results.add(table);
       }
 
       return results;
-    } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      throw new RuntimeSQLException(e);
     }
   }
 

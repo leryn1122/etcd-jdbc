@@ -16,12 +16,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import io.etcd.jetcd.Client;
 import io.github.leryn.etcd.EtcdConfiguration;
+import io.github.leryn.etcd.EtcdConfigurationAccessor;
+import io.github.leryn.etcd.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.table.AbstractEtcdTable;
 import io.github.leryn.etcd.calcite.table.EtcdStatusTable;
 import org.apache.calcite.schema.Function;
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.Table;
 import org.apache.calcite.schema.impl.AbstractSchema;
+import org.jetbrains.annotations.NotNull;
 
 public class EtcdSchema extends AbstractSchema implements Schema {
 
@@ -30,18 +33,17 @@ public class EtcdSchema extends AbstractSchema implements Schema {
     .maximumSize(64)
     .removalListener(new RemovalListener<EtcdConfiguration, Client>() {
       @Override
-      public void onRemoval(RemovalNotification<EtcdConfiguration, Client> notification) {
+      public void onRemoval(@NotNull RemovalNotification<EtcdConfiguration, Client> notification) {
         notification.getValue().close();
-        ;
       }
     })
     .build();
-  private EtcdConfiguration configuration;
+
+  private final EtcdConfiguration configuration;
 
   public EtcdSchema(EtcdConfiguration configuration) {
     this.configuration = configuration;
-    ObjectMapper objectMapper = new ObjectMapper();
-    this.objectMapper = objectMapper;
+      this.objectMapper = new ObjectMapper();
   }
 
   @Override
@@ -63,13 +65,11 @@ public class EtcdSchema extends AbstractSchema implements Schema {
       return cacheClients.get(configuration, new Callable<Client>() {
         @Override
         public Client call() throws Exception {
-          return Client.builder()
-            .endpoints(configuration.getEndpoints().toArray(new String[0]))
-            .build();
+          return EtcdConfigurationAccessor.toClient(configuration);
         }
       });
     } catch (ExecutionException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeSQLException(e);
     }
   }
 

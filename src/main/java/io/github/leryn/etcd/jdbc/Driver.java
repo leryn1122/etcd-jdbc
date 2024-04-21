@@ -1,6 +1,7 @@
 package io.github.leryn.etcd.jdbc;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,8 +10,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
+import io.etcd.jetcd.ByteSequence;
+import io.etcd.jetcd.Client;
+import io.etcd.jetcd.options.GetOption;
+import io.github.leryn.etcd.EtcdConfiguration;
+import io.github.leryn.etcd.EtcdConfigurationAccessor;
 import io.github.leryn.etcd.JdbcEtcdSubProtocol;
+import io.github.leryn.etcd.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.EtcdSchemaFactory;
 import io.github.leryn.etcd.calcite.KubernetesSchemaFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -67,8 +75,11 @@ public class Driver
     if (!acceptsURL(url)) {
       return null;
     }
+    log.info("Create one connection: {}", url);
+
     Properties props = extractProperties(url);
     url = remakeJdbcUrlAsCalciteUrl(props);
+    testEtcdConnectionOrFail(props);
 
     AvaticaConnection connection = factory.newConnection(this, factory, url, props);
     handler.onConnectionInit(connection);
@@ -78,6 +89,27 @@ public class Driver
     SchemaPlus rootSchema = calciteConnection.getRootSchema();
     setupBuiltinSchema(rootSchema, props);
     return connection;
+  }
+
+  /**
+   * Create a single Etcd Client instance to test the connection to the Etcd server.
+   * @param props Connection properties.
+   * @throws SQLException Thrown if the Etcd server is unavailable.
+   */
+  private void testEtcdConnectionOrFail(Properties props) throws SQLException {
+    EtcdConfiguration configuration = EtcdConfigurationAccessor.fromProperties(props);
+    try(Client client = EtcdConfigurationAccessor.toClient(configuration)) {
+      ByteSequence prefix = ByteSequence.from("/", StandardCharsets.UTF_8);
+      client.getKVClient()
+        .get(prefix, GetOption.builder()
+          .isPrefix(true)
+          .withKeysOnly(true)
+          .withLimit(1)
+          .build())
+        .get(10, TimeUnit.SECONDS);
+    } catch (Exception e) {
+      throw new RuntimeSQLException("The server is not available.", e);
+    }
   }
 
   private Properties defaultProperties() {
@@ -133,7 +165,7 @@ public class Driver
       return props;
     } catch (Exception e) {
       log.error("Malformed JDBC URL.", e);
-      throw new SQLException("Malformed JDBC URL: " + url, e);
+      throw new RuntimeSQLException("Malformed JDBC URL: " + url, e);
     }
   }
 

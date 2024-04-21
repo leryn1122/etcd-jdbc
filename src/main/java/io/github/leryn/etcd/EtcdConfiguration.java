@@ -11,10 +11,9 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EtcdConfiguration {
-
   @NotNull
   private List<String> endpoints;
-  private long timeout;
+  private long connectTimeout;
   private long keepaliveTime;
   private long keepaliveTimeout;
   private int maxInboundMessageSize;

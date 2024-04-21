@@ -6,7 +6,7 @@
 
 	<groupId>io.github.leryn</groupId>
 	<artifactId>etcd-jdbc</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 
 	<licenses>
 		<license>
@@ -33,16 +33,17 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+		<aspectj.version>1.9.7</aspectj.version>
 		<calcite.version>1.36.0</calcite.version>
-		<etcd-client.version>0.7.7</etcd-client.version>
-		<k8s-proto.version>20.0.1</k8s-proto.version>
-		<protobuf-java.version>3.25.3</protobuf-java.version>
-		<sqlline.version>1.12.0</sqlline.version>
+		<jetcd.version>0.7.7</jetcd.version>
 		<guava.version>33.1.0-jre</guava.version>
-		<slf4j.version>2.0.12</slf4j.version>
+		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
+		<k8s-proto.version>20.0.1</k8s-proto.version>
 		<logback.version>1.5.3</logback.version>
 		<lombok.version>1.18.26</lombok.version>
-		<jetbrains-annotation.version>24.1.0</jetbrains-annotation.version>
+		<protobuf-java.version>3.25.3</protobuf-java.version>
+		<slf4j.version>2.0.12</slf4j.version>
+		<sqlline.version>1.12.0</sqlline.version>
 	</properties>
 
 	<dependencies>
@@ -50,13 +51,13 @@
 		<dependency>
 			<groupId>io.etcd</groupId>
 			<artifactId>jetcd-api</artifactId>
-			<version>${etcd-client.version}</version>
+			<version>${jetcd.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.etcd/jetcd-core -->
 		<dependency>
 			<groupId>io.etcd</groupId>
 			<artifactId>jetcd-core</artifactId>
-			<version>${etcd-client.version}</version>
+			<version>${jetcd.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.calcite/calcite-core -->
 		<dependency>
@@ -125,13 +126,13 @@
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
 		<dependency>
 			<groupId>org.jetbrains</groupId>
 			<artifactId>annotations</artifactId>
-			<version>${jetbrains-annotation.version}</version>
+			<version>${jetbrains-annotations.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
@@ -146,14 +147,6 @@
 			<artifactId>jline-console</artifactId>
 			<version>3.25.0</version>
 		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-Java -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-Java</artifactId>
-			<version>5.1.40</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -164,6 +157,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-dependencies</goal>
@@ -177,13 +171,27 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<classpathPrefix>libs/</classpathPrefix>
+							<classpathPrefix>libs</classpathPrefix>
 						</manifest>
 					</archive>
 				</configuration>

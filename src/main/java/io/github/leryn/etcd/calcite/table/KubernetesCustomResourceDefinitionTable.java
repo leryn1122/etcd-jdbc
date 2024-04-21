@@ -68,7 +68,8 @@ public final class KubernetesCustomResourceDefinitionTable extends KubernetesNat
         CustomResourceDefinition customResourceDefinition = getObjectMapper().readValue(kv.getValue().getBytes(), CustomResourceDefinition.class);
         results.add(new Object[] {
           /* Name        */customResourceDefinition.getSpec().getNames().getPlural(),
-          /* APIVersion  */customResourceDefinition.getSpec().getGroup() + "/" + customResourceDefinition.getSpec().getVersion(),
+          /* APIVersion  */customResourceDefinition.getSpec().getGroup() + Constants.KEY_ENTRY_SEPARATOR
+                        + customResourceDefinition.getSpec().getVersion(),
           /* Kind        */customResourceDefinition.getSpec().getNames().getKind(),
           /* Plural      */customResourceDefinition.getSpec().getNames().getPlural(),
           /* Namespaced  */"Namespaced".equals(customResourceDefinition.getSpec().getScope()),
@@ -77,7 +78,7 @@ public final class KubernetesCustomResourceDefinitionTable extends KubernetesNat
       }
       return Linq4j.asEnumerable(results);
     } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Failed to get all the custom resource definitions.", e);
     }
   }
 }

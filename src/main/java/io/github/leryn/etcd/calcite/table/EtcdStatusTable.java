@@ -16,6 +16,8 @@ import io.etcd.jetcd.Maintenance;
 import io.etcd.jetcd.cluster.Member;
 import io.etcd.jetcd.maintenance.StatusResponse;
 import io.github.leryn.etcd.Constants;
+import io.github.leryn.etcd.RuntimeSQLException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.calcite.DataContext;
 import org.apache.calcite.linq4j.Enumerable;
 import org.apache.calcite.linq4j.Linq4j;
@@ -99,7 +101,8 @@ public final class EtcdStatusTable extends AbstractEtcdTable implements Scannabl
       }
       return Linq4j.asEnumerable(results);
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      throw new RuntimeException(e);
+      log.error("Failed to get Etcd cluster health status.");
+      throw new RuntimeSQLException("Failed to get Etcd cluster health status.", e);
     }
   }
 }

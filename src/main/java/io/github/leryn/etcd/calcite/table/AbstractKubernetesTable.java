@@ -2,6 +2,7 @@ package io.github.leryn.etcd.calcite.table;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.etcd.jetcd.Client;
+import io.github.leryn.etcd.RuntimeSQLException;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 
@@ -41,7 +42,8 @@ public abstract class AbstractKubernetesTable extends AbstractEtcdTable {
             initKubernetesResource();
             this.initialized = true;
           } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Failed to lazy initialize Kubernetes resources.");
+            throw new RuntimeSQLException("Failed to lazy initialize Kubernetes resources.", e);
           }
         }
       }
