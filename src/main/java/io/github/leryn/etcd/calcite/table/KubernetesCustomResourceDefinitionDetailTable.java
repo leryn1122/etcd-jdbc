@@ -22,7 +22,7 @@ import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.options.GetOption;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.github.leryn.etcd.Constants;
-import io.github.leryn.etcd.RuntimeSQLException;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import io.github.leryn.etcd.annotation.LazyInit;
 import io.github.leryn.etcd.support.StringUtils;
 import org.apache.calcite.DataContext;

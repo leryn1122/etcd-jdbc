@@ -17,7 +17,7 @@ import com.google.common.collect.Multimap;
 import io.etcd.jetcd.Client;
 import io.github.leryn.etcd.EtcdConfiguration;
 import io.github.leryn.etcd.EtcdConfigurationAccessor;
-import io.github.leryn.etcd.RuntimeSQLException;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.table.AbstractEtcdTable;
 import io.github.leryn.etcd.calcite.table.EtcdStatusTable;
 import org.apache.calcite.schema.Function;

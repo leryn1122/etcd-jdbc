@@ -1,4 +1,4 @@
-package io.github.leryn.etcd;
+package io.github.leryn.etcd.exceptions;
 
 public class RuntimeSQLException extends RuntimeException {
 

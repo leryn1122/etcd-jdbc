@@ -2,7 +2,7 @@ package io.github.leryn.etcd.calcite.table;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.etcd.jetcd.Client;
-import io.github.leryn.etcd.RuntimeSQLException;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 

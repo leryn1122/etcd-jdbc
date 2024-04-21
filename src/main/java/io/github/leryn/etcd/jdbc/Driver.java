@@ -18,7 +18,7 @@ import io.etcd.jetcd.options.GetOption;
 import io.github.leryn.etcd.EtcdConfiguration;
 import io.github.leryn.etcd.EtcdConfigurationAccessor;
 import io.github.leryn.etcd.JdbcEtcdSubProtocol;
-import io.github.leryn.etcd.RuntimeSQLException;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.EtcdSchemaFactory;
 import io.github.leryn.etcd.calcite.KubernetesSchemaFactory;
 import lombok.extern.slf4j.Slf4j;

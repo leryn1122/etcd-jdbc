@@ -17,7 +17,7 @@ import io.etcd.jetcd.kv.GetResponse;
 import io.etcd.jetcd.options.GetOption;
 import io.github.leryn.etcd.Constants;
 import io.github.leryn.etcd.EtcdConfiguration;
-import io.github.leryn.etcd.RuntimeSQLException;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.table.AbstractEtcdTable;
 import io.github.leryn.etcd.calcite.table.AbstractKubernetesTable;
 import io.github.leryn.etcd.calcite.table.KubernetesAPIResourceTable;

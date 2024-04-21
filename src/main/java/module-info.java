@@ -17,6 +17,7 @@ module etcd.jdbc {
 
   exports io.github.leryn.etcd.annotation;
   exports io.github.leryn.etcd.calcite;
+  exports io.github.leryn.etcd.exceptions;
   exports io.github.leryn.etcd.jdbc;
   exports io.github.leryn.etcd.kubernetes;
   exports io.github.leryn.etcd.support;
