@@ -21,13 +21,13 @@ import io.github.leryn.etcd.EtcdMetadataTable;
 import io.github.leryn.etcd.EtcdTransport;
 import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import org.apache.calcite.DataContext;
+import org.apache.calcite.adapter.java.JavaTypeFactory;
 import org.apache.calcite.linq4j.Enumerable;
 import org.apache.calcite.linq4j.Linq4j;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
-import org.apache.calcite.schema.Statistic;
-import org.apache.calcite.schema.Statistics;
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * System table for Etcd status, which is the same as the command:
@@ -38,7 +38,7 @@ import org.apache.calcite.sql.type.SqlTypeName;
  */
 public final class EtcdStatusTable extends AbstractEtcdMetadataTable implements EtcdMetadataTable {
 
-  public EtcdStatusTable(EtcdTransport transport) {
+  public EtcdStatusTable(@NotNull final EtcdTransport transport) {
     super("Status", transport);
   }
 
@@ -46,23 +46,9 @@ public final class EtcdStatusTable extends AbstractEtcdMetadataTable implements 
    * {@inheritDoc}
    */
   @Override
-  public Statistic getStatistic() {
-    Cluster cluster = getTransport().getClient().getClusterClient();
-    try {
-      List<Member> members = cluster.listMember().get(10, TimeUnit.SECONDS).getMembers();
-      return Statistics.of(members.size(), null, null);
-    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      log.error("Failed to get statistics", e);
-      return Statistics.UNKNOWN;
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public RelDataType getRowType(RelDataTypeFactory relDataTypeFactory) {
-    return relDataTypeFactory.createStructType(
+    JavaTypeFactory javaTypeFactory = (JavaTypeFactory) relDataTypeFactory;
+    return javaTypeFactory.createStructType(
       ImmutableMap.ofEntries(
         Map.entry("ClusterID", relDataTypeFactory.createSqlType(SqlTypeName.DECIMAL)),
         Map.entry("MemberID", relDataTypeFactory.createSqlType(SqlTypeName.DECIMAL)),
@@ -115,7 +101,7 @@ public final class EtcdStatusTable extends AbstractEtcdMetadataTable implements 
       }
       return Linq4j.asEnumerable(results);
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      Supplier<String> message = () -> "Failed to get Etcd cluster health status.";
+      Supplier<String> message = () -> "Failed to get Etcd cluster health status： " + e.getMessage();
       log.error(message.get());
       throw new RuntimeSQLException(message.get(), e);
     }

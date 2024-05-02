@@ -18,7 +18,9 @@ import io.github.leryn.etcd.EtcdConfiguration;
 import io.github.leryn.etcd.EtcdConfigurationAccessor;
 import io.github.leryn.etcd.EtcdMetadataTable;
 import io.github.leryn.etcd.EtcdTransport;
+import io.github.leryn.etcd.calcite.table.EtcdRoleTable;
 import io.github.leryn.etcd.calcite.table.EtcdStatusTable;
+import io.github.leryn.etcd.calcite.table.EtcdUserTable;
 import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import org.apache.calcite.schema.Function;
 import org.apache.calcite.schema.Schema;
@@ -89,6 +91,11 @@ public sealed class EtcdSchema extends AbstractSchema implements Schema
   }
 
   private Collection<EtcdMetadataTable> getBuiltinTables() {
-    return Set.of(new EtcdStatusTable(getTransport(this.configuration)));
+    final EtcdTransport transport = getTransport(this.configuration);
+    return Set.of(
+      new EtcdStatusTable(transport),
+      new EtcdUserTable(transport),
+      new EtcdRoleTable(transport)
+    );
   }
 }
