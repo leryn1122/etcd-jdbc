@@ -23,13 +23,13 @@ public class EtcdConfigurationAccessor {
         .toList()
     );
     builder.withKeepaliveTimeout(
-      Long.parseLong(Optional.ofNullable(properties.getProperty("keepaliveTimeout")).orElse("30000"))
+      Long.parseLong(Optional.ofNullable(properties.getProperty("keepaliveTimeout")).orElse("30000000"))
     );
     builder.withKeepaliveTime(
-      Long.parseLong(Optional.ofNullable(properties.getProperty("keepaliveTime")).orElse("30000"))
+      Long.parseLong(Optional.ofNullable(properties.getProperty("keepaliveTime")).orElse("30000000"))
     );
     builder.withConnectTimeout(
-      Long.parseLong(Optional.ofNullable(properties.getProperty("timeout")).orElse("30000"))
+      Long.parseLong(Optional.ofNullable(properties.getProperty("timeout")).orElse("30000000"))
     );
     builder.withMaxInboundMessageSize(
       Integer.parseInt(Optional.ofNullable(properties.getProperty("maxInboundMessageSize")).orElse("8388608"))
