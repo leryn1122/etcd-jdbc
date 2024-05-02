@@ -34,8 +34,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<calcite.version>1.36.0</calcite.version>
-		<jetcd.version>0.7.7</jetcd.version>
 		<guava.version>33.1.0-jre</guava.version>
+		<jackson.version>2.17.0</jackson.version>
+		<jetcd.version>0.7.7</jetcd.version>
 		<jetbrains-annotations.version>24.1.0</jetbrains-annotations.version>
 		<k8s-proto.version>20.0.1</k8s-proto.version>
 		<logback.version>1.5.3</logback.version>
@@ -71,6 +72,12 @@
 					<artifactId>json-path</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.kubernetes/client-java-proto -->
 		<dependency>

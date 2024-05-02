@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/etcd%20v3.5.12-419EDA.svg?style=for-the-badge&logo=etcd&logoColor=419EDA&labelColor=white)
 ![](https://img.shields.io/badge/k8s%20v1.28.x-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=326CE5&labelColor=white)
 
-[![Security Status](https://www.murphysec.com/platform3/v31/badge/1785978264775356416.svg)](https://www.murphysec.com/console/report/1785978247251554304/1785978264775356416)
+[![Security Status](https://www.murphysec.com/platform3/v31/badge/1785995421869469696.svg)](https://www.murphysec.com/console/report/1785978247251554304/1785995421869469696)
 
 ## TL;DR
 
@@ -66,6 +66,9 @@ Etcd and Kubernetes of every version.
 
 It is available to get an Etcd database from a real Kubernetes or a tailored Kubernetes distro, such as K3S,
 which is used a SQLite data file as storage by default.
+
+For Kubernetes of different version, it is designed to add an API resource JSON file under the classloader path
+`META-INF/kubernetes/v1.xx.xx/api-resources.jsonl` and modified JDBC parameter `kubeVersion=v1.xx.xx`.
 
 ## Architecture
 
