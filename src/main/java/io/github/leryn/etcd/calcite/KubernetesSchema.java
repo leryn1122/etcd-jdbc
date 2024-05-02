@@ -22,6 +22,7 @@ import io.github.leryn.etcd.calcite.table.KubernetesTable;
 import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import io.github.leryn.etcd.kubernetes.APIResource;
 import org.apache.calcite.schema.Table;
+import org.jetbrains.annotations.NotNull;
 import org.semver4j.Semver;
 
 public final class KubernetesSchema extends EtcdSchema {
@@ -44,7 +45,8 @@ public final class KubernetesSchema extends EtcdSchema {
 
   private Iterable<KubernetesTable<?>> getKubernetesTable() {
     List<KubernetesTable<?>> results = new ArrayList<>(1 << 8);
-    for (APIResource resource : readAPIResourcesFromClasspath(this.kubeVersion)) {
+    Iterable<APIResource> resources = readAPIResourcesFromClasspath(this.kubeVersion);
+    for (APIResource resource : resources) {
       if ("CustomResourceDefinitions".equals(resource.getPlural())) {
         continue;
       }
@@ -60,13 +62,13 @@ public final class KubernetesSchema extends EtcdSchema {
         throw new RuntimeSQLException(message.get());
       }
     }
-    results.add(new KubernetesAPIResourceTable(this.kubeVersion));
+    results.add(new KubernetesAPIResourceTable(this.kubeVersion, resources));
     results.add(new KubernetesCustomResourceDefinitionTable(getTransport()));
     return results;
   }
 
-  private Iterable<APIResource> readAPIResourcesFromClasspath(Semver kubeVersion) {
-    final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+  private Iterable<APIResource> readAPIResourcesFromClasspath(@NotNull final Semver kubeVersion) {
+    final ClassLoader classLoader = APIResource.class.getClassLoader();
     List<APIResource> resources = null;
     final String path = "META-INF/kubernetes/v" + kubeVersion + "/api-resources.jsonl";
     try (InputStream ins = classLoader.getResourceAsStream(path)) {
@@ -81,7 +83,7 @@ public final class KubernetesSchema extends EtcdSchema {
       Supplier<String> message = () ->
         "Failed to read [api-resources.jsonl] under classpath with kube version: " + this.kubeVersion;
       log.error(message.get());
-      throw new RuntimeException(message.get(), e);
+      throw new RuntimeSQLException(message.get(), e);
     }
   }
 }
