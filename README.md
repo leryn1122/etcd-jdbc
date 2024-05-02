@@ -4,6 +4,8 @@
 ![](https://img.shields.io/badge/etcd%20v3.5.12-419EDA.svg?style=for-the-badge&logo=etcd&logoColor=419EDA&labelColor=white)
 ![](https://img.shields.io/badge/k8s%20v1.28.x-326CE5.svg?style=for-the-badge&logo=kubernetes&logoColor=326CE5&labelColor=white)
 
+[![Security Status](https://www.murphysec.com/platform3/v31/badge/1785978264775356416.svg)](https://www.murphysec.com/console/report/1785978247251554304/1785978264775356416)
+
 ## TL;DR
 
 It is a simple Etcd JDBC driver for Kubernetes.
