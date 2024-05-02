@@ -9,9 +9,8 @@ import io.github.leryn.etcd.EtcdConfigurationAccessor;
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.SchemaFactory;
 import org.apache.calcite.schema.SchemaPlus;
-import org.semver4j.Semver;
 
-public class KubernetesSchemaFactory implements SchemaFactory {
+public class KubernetesCrdSchemaFactory implements SchemaFactory {
 
   @Override
   public Schema create(SchemaPlus parentSchema, String name, Map<String, Object> operand) {
@@ -20,7 +19,7 @@ public class KubernetesSchemaFactory implements SchemaFactory {
       props.setProperty(entry.getKey(), Objects.toString(entry.getValue()));
     }
     EtcdConfiguration configuration = EtcdConfigurationAccessor.fromProperties(props);
-    KubernetesSchema schema = new KubernetesSchema(Semver.coerce(props.getProperty("kubeVersion", "v1.28.0")), configuration);
+    KubernetesCrdSchema schema = new KubernetesCrdSchema(configuration);
     parentSchema.add(name, schema);
     return schema;
   }

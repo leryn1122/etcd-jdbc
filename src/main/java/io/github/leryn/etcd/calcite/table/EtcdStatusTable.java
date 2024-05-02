@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Supplier;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
@@ -16,36 +17,49 @@ import io.etcd.jetcd.Maintenance;
 import io.etcd.jetcd.cluster.Member;
 import io.etcd.jetcd.maintenance.StatusResponse;
 import io.github.leryn.etcd.Constants;
+import io.github.leryn.etcd.EtcdMetadataTable;
+import io.github.leryn.etcd.EtcdTransport;
 import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import org.apache.calcite.DataContext;
 import org.apache.calcite.linq4j.Enumerable;
 import org.apache.calcite.linq4j.Linq4j;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
-import org.apache.calcite.schema.ScannableTable;
+import org.apache.calcite.schema.Statistic;
+import org.apache.calcite.schema.Statistics;
 import org.apache.calcite.sql.type.SqlTypeName;
 
 /**
  * System table for Etcd status, which is the same as the command:
  * <p>
  * {@code
- * ETCD_API=3 etcdctl endpoint status -w fields
+ * ETCDCTL_API=3 etcdctl endpoint status -w fields
  * }
  */
-public final class EtcdStatusTable extends AbstractEtcdTable implements ScannableTable {
+public final class EtcdStatusTable extends AbstractEtcdMetadataTable implements EtcdMetadataTable {
 
-  public EtcdStatusTable(Client client) {
-    super(client, null);
+  public EtcdStatusTable(EtcdTransport transport) {
+    super("Status", transport);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public String getTableName() {
-    return "Status";
+  public Statistic getStatistic() {
+    Cluster cluster = getTransport().getClient().getClusterClient();
+    try {
+      List<Member> members = cluster.listMember().get(10, TimeUnit.SECONDS).getMembers();
+      return Statistics.of(members.size(), null, null);
+    } catch (InterruptedException | ExecutionException | TimeoutException e) {
+      log.error("Failed to get statistics", e);
+      return Statistics.UNKNOWN;
+    }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RelDataType getRowType(RelDataTypeFactory relDataTypeFactory) {
     return relDataTypeFactory.createStructType(
@@ -74,10 +88,11 @@ public final class EtcdStatusTable extends AbstractEtcdTable implements Scannabl
   @Override
   public Enumerable<Object[]> scan(DataContext context) {
     try {
-      Cluster cluster = getClient().getClusterClient();
+      Client client = getTransport().getClient();
+      Cluster cluster = client.getClusterClient();
       List<Member> members = cluster.listMember().get(10, TimeUnit.SECONDS).getMembers();
 
-      Maintenance maintenance = getClient().getMaintenanceClient();
+      Maintenance maintenance = client.getMaintenanceClient();
 
       List<Object[]> results = new ArrayList<>(members.size());
 
@@ -100,8 +115,9 @@ public final class EtcdStatusTable extends AbstractEtcdTable implements Scannabl
       }
       return Linq4j.asEnumerable(results);
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      log.error("Failed to get Etcd cluster health status.");
-      throw new RuntimeSQLException("Failed to get Etcd cluster health status.", e);
+      Supplier<String> message = () -> "Failed to get Etcd cluster health status.";
+      log.error(message.get());
+      throw new RuntimeSQLException(message.get(), e);
     }
   }
 }

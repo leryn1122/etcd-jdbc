@@ -2,8 +2,12 @@ package io.github.leryn.etcd.support;
 
 public abstract class StringUtils {
 
-  public static String toUpperCamelCase(String input) {
-    if (input == null || input.isEmpty()) {
+  public static boolean isEmpty(String s) {
+    return s == null || s.isEmpty();
+  }
+
+  public static String toUpperCamelCase2(String input) {
+    if (StringUtils.isEmpty(input)) {
       return input;
     }
 
@@ -26,6 +30,15 @@ public abstract class StringUtils {
         }
       }
     }
+    return sb.toString();
+  }
+
+  public static String toUpperCamelCase(String input) {
+    if (StringUtils.isEmpty(input)) {
+      return input;
+    }
+    StringBuilder sb = new StringBuilder(input);
+    sb.setCharAt(0, Character.toUpperCase(input.charAt(0)));
     return sb.toString();
   }
 }

@@ -11,33 +11,40 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import io.etcd.jetcd.ByteSequence;
 import io.etcd.jetcd.Client;
 import io.etcd.jetcd.options.GetOption;
 import io.github.leryn.etcd.EtcdConfiguration;
 import io.github.leryn.etcd.EtcdConfigurationAccessor;
+import io.github.leryn.etcd.EtcdTransport;
 import io.github.leryn.etcd.JdbcEtcdSubProtocol;
-import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import io.github.leryn.etcd.calcite.EtcdSchemaFactory;
+import io.github.leryn.etcd.calcite.KubernetesCrdSchemaFactory;
 import io.github.leryn.etcd.calcite.KubernetesSchemaFactory;
-import lombok.extern.slf4j.Slf4j;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import org.apache.calcite.avatica.AvaticaConnection;
 import org.apache.calcite.avatica.DriverVersion;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.schema.SchemaPlus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class Driver
   extends org.apache.calcite.jdbc.Driver
   implements java.sql.Driver {
+
+  private static final Logger log = LoggerFactory.getLogger(Driver.class);
 
   static {
     try {
       DriverManager.registerDriver(new Driver());
     } catch (SQLException e) {
-      log.error("Failed to register JDBC driver: {}, due to: {}", Driver.class.getCanonicalName(), e.getMessage());
-      throw new RuntimeException(e);
+      Supplier<String> message = () ->
+        "Failed to register JDBC driver: " + Driver.class.getCanonicalName() + ", due to: " + e.getMessage();
+      log.error(message.get());
+      throw new RuntimeException(message.get(), e);
     }
   }
 
@@ -98,7 +105,8 @@ public class Driver
    */
   private void testEtcdConnectionOrFail(Properties props) throws SQLException {
     EtcdConfiguration configuration = EtcdConfigurationAccessor.fromProperties(props);
-    try(Client client = EtcdConfigurationAccessor.toClient(configuration)) {
+    try(EtcdTransport transport = EtcdConfigurationAccessor.toTransport(configuration);
+        Client client = transport.getClient()) {
       ByteSequence prefix = ByteSequence.from("/", StandardCharsets.UTF_8);
       client.getKVClient()
         .get(prefix, GetOption.builder()
@@ -108,7 +116,10 @@ public class Driver
           .build())
         .get(10, TimeUnit.SECONDS);
     } catch (Exception e) {
-      throw new RuntimeSQLException("The server is not available.", e);
+      Supplier<String> message = () ->
+          "The server is not available: " + e.getMessage();
+      log.error(message.get());
+      throw new RuntimeSQLException(message.get(), e);
     }
   }
 
@@ -164,8 +175,10 @@ public class Driver
       }
       return props;
     } catch (Exception e) {
-      log.error("Malformed JDBC URL.", e);
-      throw new RuntimeSQLException("Malformed JDBC URL: " + url, e);
+      Supplier<String> message = () ->
+        "Malformed JDBC URL: " + url;
+      log.error(message.get(), e);
+      throw new RuntimeSQLException(message.get(), e);
     }
   }
 
@@ -173,7 +186,8 @@ public class Driver
    * Setup builtin schemas.
    * <ul>
    *   <li><b>etcd</b>: Schema for Etcd metadata logical view, including etcd status, authentication, etc.</li>
-   *   <li><b>k8s</b>: Kubernetes resource data managed by the Kubernetes API server. It's read only for current JDBC.</li>
+   *   <li><b>crd</b>: Kubernetes custom resource definition data managed by the Kubernetes API server.</li>
+   *   <li><b>k8s</b>: Kubernetes resource data managed by the Kubernetes API server.</li>
    *   <li><b>metadata</b>: Builtin schema by Calcite</li>
    * </ul>
    * @param rootSchema Root schema.
@@ -190,5 +204,8 @@ public class Driver
 
     KubernetesSchemaFactory kubernetesSchemaFactory = new KubernetesSchemaFactory();
     kubernetesSchemaFactory.create(rootSchema, "k8s", operands);
+
+    KubernetesCrdSchemaFactory kubernetesCrdSchemaFactory = new KubernetesCrdSchemaFactory();
+    kubernetesCrdSchemaFactory.create(rootSchema, "crd", operands);
   }
 }

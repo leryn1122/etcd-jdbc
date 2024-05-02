@@ -1,12 +1,12 @@
 package io.github.leryn.etcd.calcite.table;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.etcd.jetcd.Client;
-import io.github.leryn.etcd.NamedTable;
+import io.github.leryn.etcd.EtcdMetadataTable;
+import io.github.leryn.etcd.EtcdTransport;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.impl.AbstractTable;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,23 +14,31 @@ import org.slf4j.LoggerFactory;
  * Abstract Etcd table for those data fetched from Etcd entries
  * which holds an Etcd client instance.
  */
-public abstract class AbstractEtcdTable extends AbstractTable implements NamedTable {
+abstract class AbstractEtcdMetadataTable extends AbstractTable implements EtcdMetadataTable {
 
-  protected Logger log = LoggerFactory.getLogger(AbstractEtcdTable.class);
+  protected Logger log = LoggerFactory.getLogger(EtcdMetadataTable.class);
+
+  /**
+   * Table name;
+   */
+  private @NotNull final String tableName;
 
   /**
    * Etcd client
    */
-  private final Client client;
+  private @NotNull final EtcdTransport transport;
+
+  AbstractEtcdMetadataTable(@NotNull String tableName, @NotNull EtcdTransport transport) {
+    this.tableName = tableName;
+    this.transport = transport;
+  }
 
   /**
-   * Jackson object mapper
+   * {@inheritDoc}
    */
-  private final ObjectMapper objectMapper;
-
-  public AbstractEtcdTable(Client client, ObjectMapper objectMapper) {
-    this.client = client;
-    this.objectMapper = objectMapper;
+  @Override
+  public @NotNull String getTableName() {
+    return this.tableName;
   }
 
   /**
@@ -49,12 +57,7 @@ public abstract class AbstractEtcdTable extends AbstractTable implements NamedTa
   @Override
   public abstract RelDataType getRowType(RelDataTypeFactory relDataTypeFactory);
 
-  protected Client getClient() {
-    return this.client;
+  public @NotNull final EtcdTransport getTransport() {
+    return this.transport;
   }
-
-  protected ObjectMapper getObjectMapper() {
-    return this.objectMapper;
-  }
-
 }

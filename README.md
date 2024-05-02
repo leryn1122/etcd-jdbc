@@ -78,17 +78,24 @@ the remote Etcd RESTful APIs.
 ### Schema
 
 Schema is a Calcite abstract concept for the database schema.
+All the schema are readonly, due to being improper to either write or modify Etcd database instead of
+invoking API servers interface.
 Etcd JDBC provides three schema:
 
 - **etcd**: Schema for Etcd metadata logical view, including etcd status, authentication, etc.
-- **k8s**: Kubernetes resource data managed by the Kubernetes API server. It's read only for current JDBC.
+- **crd**: Kubernetes custom resource definition data managed by the Kubernetes API server.
+- **k8s**: Kubernetes resource data managed by the Kubernetes API server.
 - **metadata**: Builtin schema by Calcite
 
 In `k8s` schema, there are several kinds of tables:
 
 - **APIResources**: List all API resources, as `kubectl api-resources`.
 - **APIResources Details**: List all API resource manifest, as `kubectl get pods`.
-- **CustomResourceDefinitions**: List all definitions of CustomResourceDefinitions, as `kubectl get crd -A`.
+- **CustomResourceDefinitions**: List all definitions of `CustomResourceDefinitions`, as `kubectl get crd -A`.
+
+In `crd` schema, there are tables, those which represent lists of `CustomResourceDefinitions` installed in current
+cluster.
+
 - **CustomResourceDefinitions Details**: List all manifests of certain CustomResourceDefinitions,
   as `kubectl get xxx`.
 

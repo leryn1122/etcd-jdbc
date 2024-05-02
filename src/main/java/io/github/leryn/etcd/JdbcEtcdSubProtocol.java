@@ -2,9 +2,6 @@ package io.github.leryn.etcd;
 
 import java.util.Optional;
 
-import lombok.Getter;
-
-@Getter
 public enum JdbcEtcdSubProtocol {
   ETCD("jdbc:etcd:"),
   ETCD_CLUSTER("jdbc:etcd-cluster:");
@@ -24,4 +21,7 @@ public enum JdbcEtcdSubProtocol {
     return Optional.empty();
   }
 
+  public String getScheme() {
+    return scheme;
+  }
 }

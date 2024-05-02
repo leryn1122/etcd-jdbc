@@ -14,26 +14,31 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import io.etcd.jetcd.Client;
 import io.github.leryn.etcd.EtcdConfiguration;
 import io.github.leryn.etcd.EtcdConfigurationAccessor;
-import io.github.leryn.etcd.exceptions.RuntimeSQLException;
-import io.github.leryn.etcd.calcite.table.AbstractEtcdTable;
+import io.github.leryn.etcd.EtcdMetadataTable;
+import io.github.leryn.etcd.EtcdTransport;
 import io.github.leryn.etcd.calcite.table.EtcdStatusTable;
+import io.github.leryn.etcd.exceptions.RuntimeSQLException;
 import org.apache.calcite.schema.Function;
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.Table;
 import org.apache.calcite.schema.impl.AbstractSchema;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class EtcdSchema extends AbstractSchema implements Schema {
+public sealed class EtcdSchema extends AbstractSchema implements Schema
+  permits KubernetesSchema, KubernetesCrdSchema {
+
+  protected static final Logger log = LoggerFactory.getLogger(Schema.class);
 
   protected final ObjectMapper objectMapper;
-  private final Cache<EtcdConfiguration, Client> cacheClients = CacheBuilder.newBuilder()
+  private final Cache<EtcdConfiguration, EtcdTransport> cacheClients = CacheBuilder.newBuilder()
     .maximumSize(64)
-    .removalListener(new RemovalListener<EtcdConfiguration, Client>() {
+    .removalListener(new RemovalListener<EtcdConfiguration, EtcdTransport>() {
       @Override
-      public void onRemoval(@NotNull RemovalNotification<EtcdConfiguration, Client> notification) {
+      public void onRemoval(@NotNull RemovalNotification<EtcdConfiguration, EtcdTransport> notification) {
         notification.getValue().close();
       }
     })
@@ -46,26 +51,32 @@ public class EtcdSchema extends AbstractSchema implements Schema {
       this.objectMapper = new ObjectMapper();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected Map<String, Table> getTableMap() {
-    Map<String, AbstractEtcdTable> tableMap = new HashMap<>();
-    for (AbstractEtcdTable table : getBuiltinTables()) {
+    Map<String, EtcdMetadataTable> tableMap = new HashMap<>();
+    for (EtcdMetadataTable table : getBuiltinTables()) {
       tableMap.put(table.getTableName(), table);
     }
     return ImmutableMap.copyOf(tableMap);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected Multimap<String, Function> getFunctionMultimap() {
     return super.getFunctionMultimap();
   }
 
-  private Client getClient(EtcdConfiguration configuration) {
+  private EtcdTransport getTransport(EtcdConfiguration configuration) {
     try {
-      return cacheClients.get(configuration, new Callable<Client>() {
+      return this.cacheClients.get(configuration, new Callable<EtcdTransport>() {
         @Override
-        public Client call() throws Exception {
-          return EtcdConfigurationAccessor.toClient(configuration);
+        public EtcdTransport call() throws Exception {
+          return EtcdConfigurationAccessor.toTransport(configuration);
         }
       });
     } catch (ExecutionException e) {
@@ -73,15 +84,11 @@ public class EtcdSchema extends AbstractSchema implements Schema {
     }
   }
 
-  protected Client getClient() {
-    return getClient(this.configuration);
+  protected EtcdTransport getTransport() {
+    return getTransport(this.configuration);
   }
 
-  protected ObjectMapper getObjectMapper() {
-    return this.objectMapper;
-  }
-
-  private Collection<AbstractEtcdTable> getBuiltinTables() {
-    return Set.of(new EtcdStatusTable(getClient(this.configuration)));
+  private Collection<EtcdMetadataTable> getBuiltinTables() {
+    return Set.of(new EtcdStatusTable(getTransport(this.configuration)));
   }
 }

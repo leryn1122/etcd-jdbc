@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -12,34 +13,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.google.common.collect.ImmutableMap;
-import io.etcd.jetcd.Client;
 import io.github.leryn.etcd.kubernetes.APIResource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.calcite.DataContext;
 import org.apache.calcite.linq4j.Enumerable;
 import org.apache.calcite.linq4j.Linq4j;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.schema.ScannableTable;
-import org.apache.calcite.schema.Table;
+import org.apache.calcite.schema.impl.AbstractTable;
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.semver4j.Semver;
 
 /**
  * Table for API resources in Kubernetes cluster, which is the same result of the command:
  * <p>
  * {@code kubectl api-resources -o wide}
  */
-public final class KubernetesAPIResourceTable extends AbstractKubernetesTable
-  implements Table, ScannableTable {
+@Slf4j
+public final class KubernetesAPIResourceTable extends AbstractTable
+  implements KubernetesTable<APIResource>, ScannableTable {
 
-  public KubernetesAPIResourceTable(Client client, ObjectMapper objectMapper) {
-    super(client, objectMapper);
+  private final Semver kubeVersion;
+
+  public KubernetesAPIResourceTable(Semver kubeVersion) {
+    this.kubeVersion = kubeVersion;
   }
 
-  @Override
-  public String getTableName() {
-    return "APIResources";
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public RelDataType getRowType(RelDataTypeFactory relDataTypeFactory) {
     return relDataTypeFactory.createStructType(
@@ -54,14 +57,14 @@ public final class KubernetesAPIResourceTable extends AbstractKubernetesTable
     );
   }
 
-  @Override
-  protected void initKubernetesResource() throws Exception {
-    // It is intended to be blank.
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Enumerable<Object[]> scan(DataContext context) {
-    try (InputStream ins = KubernetesNativeResourceTable.class.getClassLoader().getResourceAsStream("api-resources.json")) {
+    ClassLoader classLoader = KubernetesAPIResourceTable.class.getClassLoader();
+    String path = "META-INF/kubernetes/v" + this.kubeVersion + "/api-resources.jsonl";
+    try (InputStream ins = classLoader.getResourceAsStream(path)) {
       ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
       objectMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
@@ -80,8 +83,26 @@ public final class KubernetesAPIResourceTable extends AbstractKubernetesTable
       }).collect(Collectors.toList());
       return Linq4j.asEnumerable(results);
     } catch (IOException e) {
-      throw new RuntimeException(
-        "Failed to get Kubernetes API resources from the driver built-in property file: [api-resources.json]", e);
+      Supplier<String> message = () ->
+        "Failed to get Kubernetes API resources from the driver built-in property file: [api-resources.jsonl]";
+      log.error(message.get());
+      throw new RuntimeException(message.get(), e);
     }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String getTableName() {
+    return "APIResources";
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isNamespaced() {
+    return false;
   }
 }
